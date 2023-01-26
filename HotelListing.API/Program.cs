@@ -38,6 +38,7 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 // Register Repositories to allow inject DbContext
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<ICountriesRepository, CountriesRepostiory>();
+builder.Services.AddScoped<IHotelsRepository, HotelsRepository>();
 
 var app = builder.Build();
 
