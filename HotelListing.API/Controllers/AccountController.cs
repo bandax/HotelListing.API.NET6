@@ -1,6 +1,5 @@
-﻿using HotelListing.API.Contracts;
-using HotelListing.API.Models.Authentication;
-using HotelListing.API.Models.Users;
+﻿using HotelListing.API.Core.Contracts;
+using HotelListing.API.Core.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,10 +10,12 @@ namespace HotelListing.API.Controllers
     public class AccountController : Controller
     {
         private readonly IAuthManager _authManager;
+        private readonly ILogger<AccountController> _logger;
 
-        public AccountController(IAuthManager authManager)
+        public AccountController(IAuthManager authManager, ILogger<AccountController> logger)
         {
             this._authManager = authManager;
+            this._logger = logger;
         }
 
         // POST: api/Account/register
@@ -26,6 +27,7 @@ namespace HotelListing.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Register([FromBody]UserDto userDto)
         {
+            _logger.LogInformation($"Trying to register a new user {userDto.Email}");           
             var errors = await _authManager.Register(userDto);
             if (errors.Any())
             {
@@ -35,7 +37,7 @@ namespace HotelListing.API.Controllers
                 }
                 return BadRequest(ModelState);
             }
-            return Ok();
+            return Ok();                        
         }
 
         // POST: api/Account/register/admin
@@ -67,12 +69,13 @@ namespace HotelListing.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult> Login([FromBody] LoginDto loginDto)
         {
+            _logger.LogInformation($"Attempt to login user {loginDto.Email}");            
             var authResponseDto = await _authManager.Login(loginDto);
             if (authResponseDto == null)
-            {                
+            {
                 return Unauthorized("Invalid user login");
             }
-            return Ok(authResponseDto);
+            return Ok(authResponseDto);                                 
         }
 
         // POST: api/Account/refreshtoken
