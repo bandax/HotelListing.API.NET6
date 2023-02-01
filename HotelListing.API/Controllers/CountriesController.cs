@@ -48,7 +48,7 @@ namespace HotelListing.API.Controllers
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<GetCountryDto>>> GetCountries()
         {
-            var countriesDto = await _repository.GetAllAsync<List<GetCountryDto>>();            
+            var countriesDto = await _repository.GetAllAsync<GetCountryDto>();            
             return Ok(countriesDto);
         }
 
